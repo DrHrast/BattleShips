@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GUI.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" BackgroundColor="Gray">
+            <Label
+                FontSize="Header"
+                HorizontalOptions="Center"
+                Text="BattleShips"
+                TextColor="Black" />
+        </Grid>
+        <Grid Grid.Row="1" BackgroundColor="GhostWhite">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid
+                x:Name="enemyGrid"
+                Grid.Column="0"
+                Padding="50"
+                BackgroundColor="LightGray"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+            <Grid
+                x:Name="friendlyGrid"
+                Grid.Column="1"
+                Padding="50"
+                BackgroundColor="LightGray"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+        </Grid>
+    </Grid>
+
+</ContentPage>
