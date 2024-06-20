@@ -2,20 +2,42 @@
 {
     public partial class MainPage : ContentPage
     {
-        int rows, columns = 5;
-
+        public int rows, columns;
+        
         public MainPage()
         {
             InitializeComponent();
+            inputRowCol();
             DrawGrid(rows, columns);
         }
 
         private void DrawGrid(int rows, int columns)
         {
-            for (int i = 0; i < int.Max(rows, columns); i++)
+            GridGraphicsView grid = new GridGraphicsView(rows, columns)
             {
-                
-            }
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+            enemyGrid = new Grid
+            {
+                Children = 
+                {
+                    grid               
+                }
+            }; 
+            friendlyGrid = new Grid
+            {
+                Children =
+                {
+                    grid
+                }
+            };
+        }
+
+        private void inputRowCol()
+        {
+            rows = int.Parse(gridRows.Text);
+            columns = int.Parse(gridColumns.Text);
         }
     }
 }
