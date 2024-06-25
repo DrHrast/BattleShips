@@ -12,13 +12,15 @@
         <Grid Grid.Row="0" BackgroundColor="Gray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Label
                 Grid.Column="0"
                 FontSize="Header"
                 HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
                 Text="BattleShips"
                 TextColor="Black" />
             <Entry
@@ -37,26 +39,56 @@
                 Keyboard="Numeric"
                 Text="10"
                 TextColor="Black" />
+            <Button
+                x:Name="applyGridChanges"
+                Grid.Column="3"
+                Margin="5"
+                BackgroundColor="Azure"
+                Text="Apply" />
         </Grid>
         <Grid Grid.Row="1" BackgroundColor="GhostWhite">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid
-                x:Name="enemyGrid"
-                Grid.Column="0"
-                Padding="12"
-                BackgroundColor="LightGray"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
-            <Grid
-                x:Name="friendlyGrid"
-                Grid.Column="1"
-                Padding="12"
-                BackgroundColor="LightGray"
-                HorizontalOptions="Center"
-                VerticalOptions="Center" />
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label
+                    Grid.Row="0"
+                    HorizontalOptions="Center"
+                    Text="Enemy Field"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+                <Grid
+                    x:Name="enemyGrid"
+                    Grid.Row="1"
+                    Padding="12"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label
+                    Grid.Row="0"
+                    HorizontalOptions="Center"
+                    Text="Your Field"
+                    TextColor="Black"
+                    VerticalOptions="Center" />
+                <Grid
+                    x:Name="friendlyGrid"
+                    Grid.Row="1"
+                    Padding="12"
+                    BackgroundColor="LightGray"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center" />
+            </Grid>
         </Grid>
     </Grid>
 
