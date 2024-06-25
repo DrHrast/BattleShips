@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class FleetGridTests
@@ -39,7 +39,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
 
             Assert.AreEqual(6, grid.GetAvailablePlacements(shipLength).Count());
         }
-        
+
         [TestMethod]
         public void GetAvailablePlacementsForGrid5x5Returns20PlacementsForShipWith4Squares()
         {
@@ -51,7 +51,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
 
             Assert.AreEqual(20, grid.GetAvailablePlacements(shipLength).Count());
         }
-        
+
         [TestMethod]
         public void GetAvailablePlacementsForGrid1x6Returns3PlacementsForShipWith2SquaresAfterSquareInColumn3IsEliminated()
         {
@@ -64,7 +64,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
 
             Assert.AreEqual(3, grid.GetAvailablePlacements(shipLength).Count());
         }
-        
+
         [TestMethod]
         public void GetAvailablePlacementsForGrid8x1Returns3PlacementsForShipWith2SquaresAfterSquareInRows3And5AreEliminated()
         {

@@ -1,9 +1,9 @@
 ﻿// Ignore Spelling: Vsite Oom
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public class LimitedQueue<T> : Queue<T>
     {
-        public LimitedQueue(int maxItems) 
+        public LimitedQueue(int maxItems)
         {
             this.maxItems = maxItems;
         }

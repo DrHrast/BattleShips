@@ -1,22 +1,22 @@
 ﻿// Ignore Spelling: Vsite Oom
 
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
-        
+
     public enum Direction
-        {
-            Upwards,
-            Rightwards,
-            Downwards,
-            Leftwards
-        }
+    {
+        Upwards,
+        Rightwards,
+        Downwards,
+        Leftwards
+    }
 
     public class ShotsGrid : Grid
     {
 
-        public ShotsGrid(int rows, int columns) : base(rows, columns) 
-        { 
-        
+        public ShotsGrid(int rows, int columns) : base(rows, columns)
+        {
+
         }
 
         protected override bool IsSquareAvailable(int row, int column)

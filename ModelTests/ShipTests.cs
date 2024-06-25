@@ -1,8 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Battleship.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using static Vsite.Oom.Battleship.Model.Ship;
+using static Battleship.Model.Ship;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class ShipTests

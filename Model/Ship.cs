@@ -1,5 +1,5 @@
 ﻿// Ignore Spelling: Vsite Oom
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public enum HitResult
     {
@@ -35,7 +35,7 @@ namespace Vsite.Oom.Battleship.Model
 
             if (Squares.All(sq => sq.IsHit))
             {
-                foreach(var sq  in Squares)
+                foreach (var sq in Squares)
                 {
                     sq.ChangeState(SquareState.Sunken);
                 }

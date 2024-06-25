@@ -1,5 +1,5 @@
 ﻿// Ignore Spelling: Vsite Oom
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public class SquareEliminator
     {

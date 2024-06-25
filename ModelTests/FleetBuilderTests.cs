@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class FleetBuilderTests

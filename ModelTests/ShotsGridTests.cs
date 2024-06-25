@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Battleship.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class ShotsGridTests
@@ -15,7 +16,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
             var squares = grid.GetSquaresInDirection(row, col, Direction.Upwards);
             Assert.AreEqual(3, squares.Count());
         }
-    
+
         [TestMethod]
         public void GetSquaresInDirectionGetSquaresInDirectionReturns4SquaresRightFromSquare3x5()
         {

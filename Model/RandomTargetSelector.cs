@@ -1,10 +1,10 @@
 ﻿// Ignore Spelling: Vsite Oom
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public class RandomTargetSelector : ITargetSelector
     {
-        public RandomTargetSelector(ShotsGrid grid, int shipLength) 
-        { 
+        public RandomTargetSelector(ShotsGrid grid, int shipLength)
+        {
             this.grid = grid;
             this.shipLength = shipLength;
         }

@@ -2,7 +2,7 @@
 
 using System.Diagnostics;
 
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public enum ShootingTactics
     {
@@ -28,13 +28,13 @@ namespace Vsite.Oom.Battleship.Model
 
         public void ProcessHitResult(HitResult hitResult)
         {
-            switch(hitResult)
+            switch (hitResult)
             {
                 case HitResult.Missed:
                     RecordTargetResult(hitResult);
                     return;
                 case HitResult.Hit:
-                    switch(ShootingTactics)
+                    switch (ShootingTactics)
                     {
                         case ShootingTactics.Random:
                             ChangeTacticsToSorruounding();
@@ -61,7 +61,7 @@ namespace Vsite.Oom.Battleship.Model
             {
                 case HitResult.Missed:
                     target.ChangeState(SquareState.Missed);
-                    return; 
+                    return;
                 case HitResult.Hit:
                     target.ChangeState(SquareState.Hit);
                     shipSquares.Add(target);

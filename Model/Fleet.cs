@@ -1,11 +1,11 @@
 ﻿// Ignore Spelling: Vsite Oom
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public class Fleet
     {
         private List<Ship> ships = new List<Ship>();
 
-        public IEnumerable<Ship> Ships { get {  return ships; } }
+        public IEnumerable<Ship> Ships { get { return ships; } }
 
         public void CreateShip(IEnumerable<Square> squares)
         {
@@ -18,7 +18,7 @@ namespace Vsite.Oom.Battleship.Model
             foreach (var ship in ships)
             {
                 var result = ship.Hit(row, column);
-                if(result != HitResult.Missed)
+                if (result != HitResult.Missed)
                 {
                     return result;
                 }

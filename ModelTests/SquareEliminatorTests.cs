@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Battleship.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class SquareEliminatorTests
@@ -14,7 +15,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
 
             Assert.AreEqual(18, eliminator.ToEliminate(shipSquares, 10, 10).Count());
         }
-        
+
         [TestMethod]
         public void FOrSquares3x9To4x9Returns8SquaresIncludingSurroundingSquares()
         {

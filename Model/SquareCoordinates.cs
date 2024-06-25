@@ -1,4 +1,4 @@
-﻿namespace Vsite.Oom.Battleship.Model
+﻿namespace Battleship.Model
 {
     public struct SquareCoordinates
     {

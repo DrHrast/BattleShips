@@ -1,11 +1,11 @@
 ﻿// Ignore Spelling: Vsite Oom
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public class FleetGrid : Grid
     {
         public FleetGrid(int rows, int columns) : base(rows, columns)
         {
-            
+
         }
 
         public override IEnumerable<Square> Squares

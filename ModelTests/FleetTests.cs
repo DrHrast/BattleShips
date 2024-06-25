@@ -1,6 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Battleship.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class FleetTests
@@ -12,7 +13,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
 
             Assert.AreEqual(0, fleet.Ships.Count());
         }
-        
+
         [TestMethod]
         public void CreateShipAddsNewShipToFleet()
         {
@@ -29,7 +30,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
             Fleet fleet = CreateFleet();
             Assert.AreEqual(HitResult.Missed, fleet.Hit(0, 0));
         }
-        
+
         [TestMethod]
         public void HitMethodReturnsHitForSquareBelongingToAnyShip()
         {
@@ -38,7 +39,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
             Assert.AreEqual(HitResult.Hit, fleet.Hit(8, 4));
             Assert.AreEqual(HitResult.Hit, fleet.Hit(1, 4));
         }
-        
+
         [TestMethod]
         public void HitMethodReturnsSunkenAfterLastSquareInFirstShipIsHit()
         {
@@ -47,7 +48,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
             Assert.AreEqual(HitResult.Hit, fleet.Hit(1, 4));
             Assert.AreEqual(HitResult.Sunken, fleet.Hit(1, 5));
         }
-        
+
         [TestMethod]
         public void HitMethodReturnsSunkenAfterLastSquareInFSecondShipIsHit()
         {
@@ -55,7 +56,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
             Assert.AreEqual(HitResult.Hit, fleet.Hit(1, 3));
             Assert.AreEqual(HitResult.Hit, fleet.Hit(1, 4));
             Assert.AreEqual(HitResult.Sunken, fleet.Hit(1, 5));
-            
+
             Assert.AreEqual(HitResult.Hit, fleet.Hit(8, 5));
             Assert.AreEqual(HitResult.Sunken, fleet.Hit(8, 4));
         }

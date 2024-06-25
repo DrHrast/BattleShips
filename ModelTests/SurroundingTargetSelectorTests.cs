@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Battleship.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class SurroundingTargetSelectorTests
@@ -20,7 +21,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
         [TestMethod]
         public void NextReturnsOneOfSquaresAroundSquare3x4()
         {
-            var grid = new ShotsGrid(10,10);
+            var grid = new ShotsGrid(10, 10);
             var squareHit = grid.Squares.FirstOrDefault(s => s.Row == 3 && s.Column == 4);
             squareHit!.ChangeState(SquareState.Hit);
             int shipLength = 5;

@@ -1,12 +1,12 @@
 ﻿// Ignore Spelling: Vsite Oom
 using System.ComponentModel.DataAnnotations;
 
-namespace Vsite.Oom.Battleship.Model
+namespace Battleship.Model
 {
     public class SurroundingTargetSelector : ITargetSelector
     {
-        public SurroundingTargetSelector(ShotsGrid grid, Square firstHit, int shipLength) 
-        { 
+        public SurroundingTargetSelector(ShotsGrid grid, Square firstHit, int shipLength)
+        {
             _grid = grid;
             _firstHit = firstHit;
             _shipLength = shipLength;
@@ -19,10 +19,10 @@ namespace Vsite.Oom.Battleship.Model
             //TODO: Implement with a loop
 
             var up = _grid.GetSquaresInDirection(_firstHit.Row, _firstHit.Column, Direction.Upwards);
-            if(up.Count() > 0) { _squares.Add(up); }
+            if (up.Count() > 0) { _squares.Add(up); }
 
             var right = _grid.GetSquaresInDirection(_firstHit.Row, _firstHit.Column, Direction.Rightwards);
-            if(right.Count() > 0) { _squares.Add(right); }
+            if (right.Count() > 0) { _squares.Add(right); }
 
             var down = _grid.GetSquaresInDirection(_firstHit.Row, _firstHit.Column, Direction.Downwards);
             if (down.Count() > 0) { _squares.Add(down); }

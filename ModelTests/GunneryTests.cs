@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Battleship.Model;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Vsite.Oom.Battleship.Model.Tests
+namespace Battleship.Model.Tests
 {
     [TestClass]
     public class GunneryTests
@@ -9,7 +10,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
         [TestMethod]
         public void InitialShootingTacticsIsRandom()
         {
-            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3});
+            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3 });
             Assert.AreEqual(ShootingTactics.Random, gunnery.ShootingTactics);
         }
 
@@ -25,7 +26,7 @@ namespace Vsite.Oom.Battleship.Model.Tests
         [TestMethod]
         public void ShootingTacticsChangesToSurroundingAfterFirstSquareIsHit()
         {
-            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3});
+            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3 });
             gunnery.ProcessHitResult(HitResult.Hit);
             Assert.AreEqual(ShootingTactics.Surrounding, gunnery.ShootingTactics);
         }
@@ -44,17 +45,17 @@ namespace Vsite.Oom.Battleship.Model.Tests
         [TestMethod]
         public void ShootingTacticsChangesFromSurroundingToInlineAfterSecondSquareIsHit()
         {
-            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3});
+            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3 });
             gunnery.ProcessHitResult(HitResult.Hit);
             Assert.AreEqual(ShootingTactics.Surrounding, gunnery.ShootingTactics);
             gunnery.ProcessHitResult(HitResult.Hit);
             Assert.AreEqual(ShootingTactics.Inline, gunnery.ShootingTactics);
         }
-        
+
         [TestMethod]
         public void ShootingTacticsRemainsInlineAfterThirdSquareIsHit()
         {
-            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3});
+            var gunnery = new Gunnery(10, 10, new List<int> { 1, 2, 3 });
             gunnery.ProcessHitResult(HitResult.Hit);
             Assert.AreEqual(ShootingTactics.Surrounding, gunnery.ShootingTactics);
             gunnery.ProcessHitResult(HitResult.Hit);
