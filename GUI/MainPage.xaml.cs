@@ -6,43 +6,20 @@ namespace GUI
     {
         private int rows = 10;
         private int columns = 10;
+        private List<int> ints = new() {7, 8, 9, 10, 11, 12};
 
         public MainPage()
         {
             InitializeComponent();
-            inputRowCol();
-            DrawGridView gridView = new(rows, columns);
-
-            //DrawGrid(enemyGrid, rows, columns);
-            //DrawGrid(friendlyGrid, rows, columns);
-            gridView.DrawGrid(enemyGrid);
-            gridView.DrawGrid(friendlyGrid);
-            applyGridChanges.Clicked += OnApplyGridChangesClicked;
+            LoadData();
         }
 
-        private void OnApplyGridChangesClicked(object sender, EventArgs e)
+        private void LoadData()
         {
-            inputRowCol();
-            enemyGrid.Children.Clear();
-            friendlyGrid.Children.Clear();
-
-            DrawGridView gridView = new(rows, columns);
-            gridView.DrawGrid(enemyGrid);
-            gridView.DrawGrid(friendlyGrid);
-            //DrawGrid(enemyGrid, rows, columns);
-            //DrawGrid(friendlyGrid, rows, columns);
-        }
-
-        private void inputRowCol()
-        {
-            if (!int.TryParse(gridRows.Text, out rows))
-            {
-                rows = 10;
-            }
-            if (!int.TryParse(gridColumns.Text, out columns))
-            {
-                columns = 10;
-            }
+            rowPicker.ItemsSource = ints;
+            columnPicker.ItemsSource = ints;
+            rowPicker.SelectedIndex = 3;
+            columnPicker.SelectedIndex = 3;
         }
     }
 }

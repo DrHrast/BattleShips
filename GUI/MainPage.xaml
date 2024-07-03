@@ -4,92 +4,140 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Grid>
+    <Grid BackgroundColor="BlueViolet">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="1.3*" />
+            <!--  Header  -->
             <RowDefinition Height="*" />
+            <!--  Difficulty  -->
+            <RowDefinition Height="*" />
+            <!--  Grid size  -->
+            <RowDefinition Height="*" />
+            <!--  Start button  -->
+            <RowDefinition Height="*" />
+            <!--  Footer  -->
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" BackgroundColor="Gray">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
+        <Frame
+            Grid.Row="0"
+            Margin="0"
+            Padding="0"
+            BackgroundColor="CadetBlue"
+            CornerRadius="8">
             <Label
-                Grid.Column="0"
                 FontSize="Header"
-                HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
-                Text="BattleShips"
-                TextColor="Black" />
-            <Entry
-                x:Name="gridColumns"
-                Grid.Column="1"
-                Margin="5"
-                BackgroundColor="Azure"
-                Keyboard="Numeric"
-                Text="10"
-                TextColor="Black" />
-            <Entry
-                x:Name="gridRows"
-                Grid.Column="2"
-                Margin="5"
-                BackgroundColor="Azure"
-                Keyboard="Numeric"
-                Text="10"
-                TextColor="Black" />
-            <Button
-                x:Name="applyGridChanges"
-                Grid.Column="3"
-                Margin="5"
-                BackgroundColor="Azure"
-                Text="Apply" />
-        </Grid>
-        <Grid Grid.Row="1" BackgroundColor="GhostWhite">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Label
-                    Grid.Row="0"
-                    HorizontalOptions="Center"
-                    Text="Enemy Field"
-                    TextColor="Black"
-                    VerticalOptions="Center" />
-                <Grid
-                    x:Name="enemyGrid"
-                    Grid.Row="1"
-                    Padding="12"
-                    BackgroundColor="LightGray"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center" />
+                Text="Battle Ships"
+                TextColor="Black"
+                VerticalTextAlignment="Center" />
+        </Frame>
+        <Frame
+            Grid.Row="1"
+            BackgroundColor="AliceBlue"
+            CornerRadius="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!--  Easy  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  Medium  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  Hard  -->
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <RadioButton
+                        Content="Easy"
+                        FontSize="Medium"
+                        GroupName="difficulty"
+                        HorizontalOptions="Center"
+                        TextColor="Black"
+                        VerticalOptions="Center" />
+                </Grid>
+                <Grid Grid.Column="1">
+                    <RadioButton
+                        Content="Medium"
+                        FontSize="Medium"
+                        GroupName="difficulty"
+                        HorizontalOptions="Center"
+                        TextColor="Black"
+                        VerticalOptions="Center" />
+                </Grid>
+                <Grid Grid.Column="3">
+                    <RadioButton
+                        Content="Hard"
+                        FontSize="Medium"
+                        GroupName="difficulty"
+                        HorizontalOptions="Center"
+                        TextColor="Black"
+                        VerticalOptions="Center" />
+                </Grid>
             </Grid>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Label
-                    Grid.Row="0"
-                    HorizontalOptions="Center"
-                    Text="Your Field"
-                    TextColor="Black"
-                    VerticalOptions="Center" />
-                <Grid
-                    x:Name="friendlyGrid"
-                    Grid.Row="1"
-                    Padding="12"
-                    BackgroundColor="LightGray"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center" />
+        </Frame>
+        <Frame
+            Grid.Row="2"
+            BackgroundColor="AliceBlue"
+            CornerRadius="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Frame
+                        Grid.Column="0"
+                        BackgroundColor="AliceBlue"
+                        BorderColor="AliceBlue">
+                        <Label
+                            FontSize="Medium"
+                            Text="Rows:"
+                            TextColor="Black" />
+                    </Frame>
+                    <Frame
+                        Grid.Column="1"
+                        Padding="0"
+                        BackgroundColor="AliceBlue"
+                        BorderColor="AliceBlue"
+                        CornerRadius="25">
+                        <Picker
+                            x:Name="rowPicker"
+                            Background="DarkBlue"
+                            FontSize="Medium" />
+                    </Frame>
+                </Grid>
+                <Grid Grid.Column="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Frame
+                        Grid.Column="0"
+                        BackgroundColor="AliceBlue"
+                        BorderColor="AliceBlue">
+                        <Label
+                            FontSize="Medium"
+                            Text="Columns:"
+                            TextColor="Black" />
+                    </Frame>
+                    <Frame
+                        Grid.Column="1"
+                        Padding="0"
+                        BackgroundColor="AliceBlue"
+                        BorderColor="AliceBlue"
+                        CornerRadius="25">
+                        <Picker
+                            x:Name="columnPicker"
+                            Background="DarkBlue"
+                            FontSize="Medium" />
+                    </Frame>
+                </Grid>
             </Grid>
-        </Grid>
+        </Frame>
     </Grid>
 
 </ContentPage>
