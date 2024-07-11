@@ -21,5 +21,10 @@ namespace GUI
             rowPicker.SelectedIndex = 3;
             columnPicker.SelectedIndex = 3;
         }
+
+        private void startButton_Clicked(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

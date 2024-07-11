@@ -14,7 +14,7 @@
             <!--  Grid size  -->
             <RowDefinition Height="*" />
             <!--  Start button  -->
-            <RowDefinition Height="*" />
+            <!--<RowDefinition Height="*" />-->
             <!--  Footer  -->
         </Grid.RowDefinitions>
         <Frame
@@ -96,7 +96,8 @@
                         <Label
                             FontSize="Medium"
                             Text="Rows:"
-                            TextColor="Black" />
+                            TextColor="Black"
+                            VerticalOptions="Center" />
                     </Frame>
                     <Frame
                         Grid.Column="1"
@@ -107,7 +108,8 @@
                         <Picker
                             x:Name="rowPicker"
                             Background="DarkBlue"
-                            FontSize="Medium" />
+                            FontSize="Medium" 
+                            Margin="10"/>
                     </Frame>
                 </Grid>
                 <Grid Grid.Column="3">
@@ -122,7 +124,8 @@
                         <Label
                             FontSize="Medium"
                             Text="Columns:"
-                            TextColor="Black" />
+                            TextColor="Black"
+                            VerticalOptions="Center" />
                     </Frame>
                     <Frame
                         Grid.Column="1"
@@ -133,10 +136,27 @@
                         <Picker
                             x:Name="columnPicker"
                             Background="DarkBlue"
-                            FontSize="Medium" />
+                            FontSize="Medium"
+                            Margin="10"/>
                     </Frame>
                 </Grid>
             </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="3"
+            BackgroundColor="AliceBlue"
+            CornerRadius="15">
+            <Button
+                x:Name="startButton"
+                CornerRadius="15"
+                FontSize="Medium"
+                HorizontalOptions="CenterAndExpand"
+                Text="Start"
+                TextColor="Black"
+                VerticalOptions="CenterAndExpand" 
+                Padding="30"
+                Margin="5"
+                Clicked="startButton_Clicked"/>
         </Frame>
     </Grid>
 
