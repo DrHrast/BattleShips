@@ -1,4 +1,5 @@
-﻿using GUI.Views;
+﻿using Battleship.GUI;
+using GUI.Views;
 
 namespace GUI
 {
@@ -22,9 +23,11 @@ namespace GUI
             columnPicker.SelectedIndex = 3;
         }
 
-        private void startButton_Clicked(object sender, EventArgs e)
+        private async void startButton_Clicked(object sender, EventArgs e)
         {
-            
+            int rows = ints[rowPicker.SelectedIndex];
+            int columns = ints[columnPicker.SelectedIndex];
+            await Navigation.PushAsync(new GamePage(rows, columns));
         }
     }
 }

@@ -104,12 +104,12 @@
                         Padding="0"
                         BackgroundColor="AliceBlue"
                         BorderColor="AliceBlue"
-                        CornerRadius="25">
+                        CornerRadius="45">
                         <Picker
                             x:Name="rowPicker"
+                            Margin="10"
                             Background="DarkBlue"
-                            FontSize="Medium" 
-                            Margin="10"/>
+                            FontSize="Medium" />
                     </Frame>
                 </Grid>
                 <Grid Grid.Column="3">
@@ -132,12 +132,12 @@
                         Padding="0"
                         BackgroundColor="AliceBlue"
                         BorderColor="AliceBlue"
-                        CornerRadius="25">
+                        CornerRadius="45">
                         <Picker
                             x:Name="columnPicker"
+                            Margin="10"
                             Background="DarkBlue"
-                            FontSize="Medium"
-                            Margin="10"/>
+                            FontSize="Medium" />
                     </Frame>
                 </Grid>
             </Grid>
@@ -148,16 +148,16 @@
             CornerRadius="15">
             <Button
                 x:Name="startButton"
+                Margin="5"
+                Padding="30"
+                BackgroundColor="CadetBlue"
+                Clicked="startButton_Clicked"
                 CornerRadius="15"
                 FontSize="Medium"
                 HorizontalOptions="CenterAndExpand"
-                Text="Start"
+                Text="Let's play a game!"
                 TextColor="Black"
-                VerticalOptions="CenterAndExpand" 
-                Padding="30"
-                Margin="5"
-                Clicked="startButton_Clicked"/>
+                VerticalOptions="CenterAndExpand" />
         </Frame>
     </Grid>
-
 </ContentPage>

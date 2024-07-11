@@ -13,7 +13,7 @@ namespace Battleship.GUI.Models
         {
             rowsNumber = rows;
             columnsNumber = columns;
-            this.gameGrid = new Model.FleetGrid(rowsNumber, columnsNumber);
+            gameGrid = new Model.FleetGrid(rowsNumber, columnsNumber);
             this.dificulty = dificulty;
         }
     }
