@@ -3,16 +3,297 @@
 @rendermode InteractiveServer
 @using Battleship.Model
 
-<div class="container">
-	<h3>GameGrid</h3>
-</div>
-
-
-@code {
-
-	protected override void OnInitialized()
-	{
-		
+<style>
+	body {
+		height: 100vh;
+		width: 100vw;
+		justify-content: center;
+		overflow: hidden;
+		text-align: center;
+		display: flex;
+		background-color: #242423;
 	}
 
+	.container {
+		height: 80%;
+		width: 80%;
+		padding: 2%;
+		margin: 5%;
+		display: flex;
+		flex-direction: column;
+		border: 5px solid #44fa16;
+		border-radius: 10px;
+		background-color: #252e23;
+		text-align: center;
+		color: white;
+	}
+
+	.boards {
+		display: flex;
+		gap: 200px;
+		margin: auto;
+		justify-content: center;
+	}
+
+	.row {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.square {
+		height: 50px;
+		width: 50px;
+		gap: 2px;
+	}
+
+	.btn-hover:hover {
+		opacity: 0.5;
+	}
+
+	.ship {
+		background-color: #8a484b;
+	}
+
+	.water {
+		background-color: #a1bdc9;
+	}
+
+	.hit-ship {
+		background-color: #4f2527;
+	}
+
+	.hit-water {
+		background-color: #3a535e;
+	}
+
+	.ship-sunken {
+		background-color: #323333;
+	}
+</style>
+
+<div class="container">
+	<h3>GameGrid</h3>
+	<div class="boards">
+		<div class="friendlyBoard">
+			@fleetBoard
+		</div>
+		<div class="enemyBoard">
+			@enemyShotBoard
+		</div>
+	</div>
+</div>
+
+@code {
+	private int rowNumber = 10;
+	private int columnNumber = 10;
+	private int[] ships = {5, 4, 3, 3, 2};
+
+	private List<List<Square>> friendlyBoard = [];
+	private List<List<Square>> friendlyShots = [];
+	private Gunnery friendlyGunnery = null!;
+	private Fleet friendlyFleet = null!;
+	private List<List<Square>> enemyBoard = [];
+	private List<List<Square>> enemyShots = [];
+	private Gunnery enemyGunnery = null!;
+	private Fleet enemyFleet = null!;
+
+	private RenderFragment ?fleetBoard;
+	private RenderFragment ?enemyShotBoard;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
+		InitializePlayer();
+		InitializeEnemy();
+		await FillBoards();
+	}
+
+	private void InitializePlayer()
+	{
+		friendlyBoard.Clear();
+		FleetBuilder fleetBuilder = new(rowNumber, columnNumber, ships);
+		friendlyFleet = fleetBuilder.CreateFleet();
+		friendlyGunnery = new Gunnery(rowNumber, columnNumber, ships);
+
+		CreateBoards(friendlyBoard, friendlyShots);
+	}
+
+	private void InitializeEnemy()
+	{
+		enemyBoard.Clear();
+		FleetBuilder fleetBuilder = new(rowNumber, columnNumber, ships);
+		enemyFleet = fleetBuilder.CreateFleet();
+		enemyGunnery = new Gunnery(rowNumber, columnNumber, ships);
+
+		CreateBoards(enemyBoard, enemyShots, false);
+	}
+
+	private void CreateBoards(List<List<Square>> fleetBoard, List<List<Square>> shotsBoard, bool IsFriendly=true)
+	{
+		for(int i = 0; i < rowNumber; ++i)
+		{
+			List<Square> fleetRow = [];
+			List<Square> shotsRow = [];
+			for(int j = 0; j < columnNumber; ++j)
+			{
+				fleetRow.Add(new Square(i, j));
+				shotsRow.Add(new Square(i, j));
+			}
+			fleetBoard.Add(fleetRow);
+			shotsBoard.Add(shotsRow);
+		}
+
+		if(IsFriendly)
+		{
+			foreach(var ship in friendlyFleet.Ships)
+			{
+				foreach(var field in ship.Squares)
+				{
+					fleetBoard[field.Row][field.Column].IsShip = true;
+				}
+			}
+		}
+		else
+		{
+			foreach(var ship in enemyFleet.Ships)
+			{
+				foreach(var field in ship.Squares)
+				{
+					fleetBoard[field.Row][field.Column].IsShip = true;
+				}
+			}	
+		}
+	}
+
+	private async Task FillBoards()
+	{
+		int d = 0;
+		fleetBoard = builder =>
+		{
+			for (int i = 0; i < friendlyBoard.Count(); ++i)
+			{
+				builder.OpenElement(d++, "div");
+				builder.AddAttribute(d++, "class", "row");
+
+				for (int j = 0; j < friendlyBoard[i].Count(); ++j)
+				{
+					builder.OpenElement(d++, "button");
+					string cssClass = friendlyBoard[i][j].SquareState switch
+					{
+						SquareState.Hit => "square hit-ship",
+						SquareState.Missed => "square hit-water",
+						SquareState.Sunken => "square ship-sunken",
+						_ => "square water"
+					};
+					builder.AddAttribute(d++, "class", friendlyBoard[i][j].IsShip ? "square ship" : "square water");
+					builder.AddAttribute(d++, "Disabled", "true");
+					builder.CloseElement();
+				}
+
+				builder.CloseElement();
+			}
+		};
+
+		enemyShotBoard = builder =>
+		{
+			for (int i = 0; i < enemyBoard.Count(); ++i)
+			{
+				builder.OpenElement(d++, "div");
+				builder.AddAttribute(d++, "class", "row");
+
+				for (int j = 0; j < enemyBoard[i].Count(); ++j)
+				{
+					builder.OpenElement(d++, "button");
+					string cssClass = enemyBoard[i][j].SquareState switch
+					{
+						SquareState.Hit => "square hit-ship",
+						SquareState.Missed => "square hit-water",
+						SquareState.Sunken => "square ship-sunken",
+						_ => "btn-hover square water"
+					};
+					builder.AddAttribute(d++, "class", cssClass);
+					builder.AddAttribute(d++, "onclick", EventCallback.Factory.Create(this, () => FriendlyFire(enemyBoard.ElementAt(i).ElementAt(j))));
+					builder.CloseElement();
+				}
+
+				builder.CloseElement();
+			}
+		};
+		StateHasChanged();
+	}
+
+	private void FriendlyFire(Square target)
+	{
+		var hit = enemyFleet.Hit(target.Row, target.Column);
+
+		switch(hit)
+		{
+			case HitResult.Hit:
+				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
+				break;
+			case HitResult.Sunken:
+				{
+					foreach(var ship in enemyFleet.Ships)
+					{
+						if (ship.Squares.Any(square => square.Row == target.Row && square.Column == target.Column))
+						{
+							foreach (var sunkSquare in ship.Squares)
+							{
+								enemyBoard[sunkSquare.Row][sunkSquare.Column].ChangeState(SquareState.Sunken);
+							}
+							break;
+						}
+					}
+					break;
+				}
+			default:
+				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
+				break;
+		}
+
+		if(!IsGameOver())
+		{
+			EnemyFire();
+		}
+	}
+
+	private void EnemyFire()
+	{
+		var target = enemyGunnery.Next();
+		var hit = friendlyFleet.Hit(target.Row, target.Column);
+
+		enemyGunnery.ProcessHitResult(hit);
+		switch(hit)
+		{
+			case HitResult.Hit:
+				friendlyBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
+				break;
+			case HitResult.Sunken:
+				{
+					foreach (var ship in friendlyFleet.Ships)
+					{
+						if (ship.Squares.Any(square => square.Row == target.Row && square.Column == target.Column))
+						{
+							foreach (var sunkSquare in ship.Squares)
+							{
+								friendlyBoard[sunkSquare.Row][sunkSquare.Column].ChangeState(SquareState.Sunken);
+							}
+							break;
+						}
+					}
+					break;
+				}
+			default:
+				friendlyBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
+				break;
+		}
+	}
+
+	private bool IsGameOver()
+	{
+		var playerLost = friendlyFleet.Ships.SelectMany(s => s.Squares).All(ship => ship.SquareState != SquareState.Intact);
+		var enemyLost = enemyFleet.Ships.SelectMany(s => s.Squares).All(ship => ship.SquareState != SquareState.Intact);
+
+		return playerLost || enemyLost;
+	}
 }

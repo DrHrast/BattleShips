@@ -13,7 +13,7 @@ namespace Battleship.Model
             ships.Add(ship);
         }
 
-        public object Hit(int row, int column)
+        public HitResult Hit(int row, int column)
         {
             foreach (var ship in ships)
             {
