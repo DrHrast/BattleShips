@@ -65,14 +65,42 @@
 		color: #282928;
 	}
 
+	.oponents {
+		display: flex;
+		justify-content: center;
+		gap: 50px;
+	}
+
+	.enemy {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.friendly {
+		display: flex;
+		flex-direction: column;
+	}
+
 </style>
 
 <div class="container">
 	<h1>Battle Ships 1.0</h1>
 	<label class="bold-label">Grid: </label>
 	<label class="inline-text">10x10</label><br />
-	<label class="bold-label">Opponent: </label>
-	<label class="inline-text">AI</label>
+	<div class="oponents">
+		<div class="enemy">
+			<label class="bold-label">Opponent: </label>
+			<label class="inline-text">AI</label>
+		</div>
+		<div class="versus"><label class="bold-label">VS</label></div>
+		<div class="friendly">
+			<label class="bold-label">Player: </label>
+			<select id="player" name="player" size="2">
+				<option value="ai">AI</option>
+				<option value="human">Human</option>
+			</select>
+		</div>
+	</div>
 	<button class="start-btn btn" onclick="@StartNewGame">New Game</button>
 </div>
 
