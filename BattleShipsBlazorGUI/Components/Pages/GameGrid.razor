@@ -46,6 +46,10 @@
 		gap: 2px;
 	}
 
+	.btn-pointer {
+		cursor: default !important;
+	}
+
 	.btn-hover:hover {
 		opacity: 0.5;
 	}
@@ -60,14 +64,17 @@
 
 	.hit-ship {
 		background-color: #4f2527;
+		cursor: default !important;
 	}
 
 	.hit-water {
 		background-color: #3a535e;
+		cursor: default !important;
 	}
 
 	.ship-sunken {
 		background-color: #323333;
+		cursor: default !important;
 	}
 </style>
 
@@ -167,52 +174,32 @@
 
 	private async Task FillBoards()
 	{
+		await FillFriendlyBoard();
+		await FIllEnemyBoard();
+	}
+
+	private async Task FillFriendlyBoard()
+	{
 		int d = 0;
 		fleetBoard = builder =>
 		{
-			for (int i = 0; i < friendlyBoard.Count(); ++i)
+			foreach (var row in friendlyBoard) /* (int i = 0; i < friendlyBoard.Count(); ++i) */
 			{
-				builder.OpenElement(d++, "div");
-				builder.AddAttribute(d++, "class", "row");
+				builder.OpenElement(0, "div");
+				builder.AddAttribute(1, "class", "row");
 
-				for (int j = 0; j < friendlyBoard[i].Count(); ++j)
+				foreach (var square in row) /* (int j = 0; j < friendlyBoard[i].Count(); ++j) */
 				{
-					builder.OpenElement(d++, "button");
-					string cssClass = friendlyBoard[i][j].SquareState switch
+					builder.OpenElement(2, "button");
+					string cssClass = square.SquareState switch
 					{
-						SquareState.Hit => "square hit-ship",
-						SquareState.Missed => "square hit-water",
-						SquareState.Sunken => "square ship-sunken",
-						_ => "square water"
+						SquareState.Hit => "btn-pointer square hit-ship",
+						SquareState.Missed => "btn-pointer square hit-water",
+						SquareState.Sunken => "btn-pointer square ship-sunken",
+						_ => "btn-pointer square water"
 					};
-					builder.AddAttribute(d++, "class", friendlyBoard[i][j].IsShip ? "square ship" : "square water");
-					builder.AddAttribute(d++, "Disabled", "true");
-					builder.CloseElement();
-				}
-
-				builder.CloseElement();
-			}
-		};
-
-		enemyShotBoard = builder =>
-		{
-			for (int i = 0; i < enemyBoard.Count(); ++i)
-			{
-				builder.OpenElement(d++, "div");
-				builder.AddAttribute(d++, "class", "row");
-
-				for (int j = 0; j < enemyBoard[i].Count(); ++j)
-				{
-					builder.OpenElement(d++, "button");
-					string cssClass = enemyBoard[i][j].SquareState switch
-					{
-						SquareState.Hit => "square hit-ship",
-						SquareState.Missed => "square hit-water",
-						SquareState.Sunken => "square ship-sunken",
-						_ => "btn-hover square water"
-					};
-					builder.AddAttribute(d++, "class", cssClass);
-					builder.AddAttribute(d++, "onclick", EventCallback.Factory.Create(this, () => FriendlyFire(enemyBoard.ElementAt(i).ElementAt(j))));
+					builder.AddAttribute(3, "class", square.IsShip ? "square ship" : "square water");
+					//builder.AddAttribute(d++, "Disabled", "true");
 					builder.CloseElement();
 				}
 
@@ -222,7 +209,38 @@
 		StateHasChanged();
 	}
 
-	private void FriendlyFire(Square target)
+	private async Task FIllEnemyBoard() 
+	{
+		int d = 0;
+		enemyShotBoard = builder =>
+		{
+			foreach (var row in enemyBoard)/* (int i = 0; i < enemyBoard.Count(); ++i) */
+			{
+				builder.OpenElement(0, "div");
+				builder.AddAttribute(1, "class", "row");
+
+				foreach (var square in row) /* (int j = 0; j < enemyBoard[i].Count(); ++j) */
+				{
+					builder.OpenElement(2, "button");
+					string cssClass = square.SquareState switch
+					{
+						SquareState.Hit => "square hit-ship",
+						SquareState.Missed => "square hit-water",
+						SquareState.Sunken => "square ship-sunken",
+						_ => "btn-hover square water"
+					};
+					builder.AddAttribute(3, "class", cssClass);
+					builder.AddAttribute(4, "onclick", EventCallback.Factory.Create(this, async () => await FriendlyFire(square)));
+					builder.CloseElement();
+				}
+
+				builder.CloseElement();
+			}
+		};
+		StateHasChanged();
+	}
+
+	private async Task FriendlyFire(Square target)
 	{
 		var hit = enemyFleet.Hit(target.Row, target.Column);
 
@@ -253,11 +271,11 @@
 
 		if(!IsGameOver())
 		{
-			EnemyFire();
+			await EnemyFire();
 		}
 	}
 
-	private void EnemyFire()
+	private async Task EnemyFire()
 	{
 		var target = enemyGunnery.Next();
 		var hit = friendlyFleet.Hit(target.Row, target.Column);
@@ -286,6 +304,13 @@
 			default:
 				friendlyBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
 				break;
+		}
+
+		StateHasChanged();
+
+		if (IsGameOver())
+		{
+			Console.WriteLine("You Lost!");
 		}
 	}
 

@@ -17,7 +17,7 @@ namespace Battleship.Model
             //var selectedIndex = random.Next(candidates.Count());
             //return candidates.ElementAt(selectedIndex);
 
-            //TODO: Implement square target by count of how many
+            //DID_IT: Implement square target by count of how many
             var availablePlacements = grid.GetAvailablePlacements(shipLength);
             var availableSquares = availablePlacements.SelectMany(s => s);
             var grouped = availableSquares.GroupBy(x => x);
