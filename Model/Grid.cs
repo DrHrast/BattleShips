@@ -26,10 +26,10 @@ namespace Battleship.Model
 
         public IEnumerable<IEnumerable<Square>> GetAvailablePlacements(int length)
         {
-            return GetVerticalAvailablePlacements(length).Concat(GetHorizontalAvailablePlacements(length));
+            return GetHorizontalAvailablePlacements(length).Concat(GetVerticalAvailablePlacements(length));
         }
 
-        protected abstract bool IsSquareAvailable(int row, int column);
+		protected abstract bool IsSquareAvailable(int row, int column);
 
         private IEnumerable<IEnumerable<Square>> GetHorizontalAvailablePlacements(int length)
         {
@@ -44,7 +44,7 @@ namespace Battleship.Model
                     if (IsSquareAvailable(r, c))
                     {
                         queue.Enqueue(squares[r, c]!);
-                        if (queue.Count() >= length)
+                        if (queue.Count() == length)
                         {
                             result.Add(queue.ToArray());
                         }
@@ -71,7 +71,7 @@ namespace Battleship.Model
                     if (IsSquareAvailable(r, c))
                     {
                         queue.Enqueue(squares[r, c]!);
-                        if (queue.Count() >= length)
+                        if (queue.Count() == length)
                         {
                             result.Add(queue.ToArray());
                         }

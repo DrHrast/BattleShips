@@ -1,35 +1,35 @@
-﻿using Battleship.Model;
-
-namespace Battleship.Model
+﻿namespace Battleship.Model
 {
 	public class InlineTargetSelector : ITargetSelector
 	{
+		private readonly ShotsGrid _grid;
+		private readonly IEnumerable<Square> _squaresHit;
+		private readonly int _shipLength;
+
+		private readonly Random _random = new();
+
 		public InlineTargetSelector(ShotsGrid grid, IEnumerable<Square> squaresHit, int shipLength)
 		{
-			this.grid = grid;
-			this.shipLength = shipLength;
-			this.squaresHit = squaresHit;
+			_grid = grid;
+			_squaresHit = squaresHit;
+			_shipLength = shipLength;
 		}
-
-		private readonly ShotsGrid grid;
-		private readonly IEnumerable<Square> squaresHit;
-		private readonly int shipLength;
-		private readonly Random random = new Random();
 
 		public Square Next()
 		{
-			var sorted = squaresHit.OrderBy(sq => sq.Row + sq.Column);
+			var sorted = _squaresHit.OrderBy(keySelector: s => s.Row + s.Column);
 			var directionCandidates = new List<IEnumerable<Square>>();
 
 			// Horizontal
 			if (sorted.First().Row == sorted.Last().Row)
 			{
-				var left = grid.GetSquaresInDirection(sorted.First().Row, sorted.First().Column, Direction.Leftwards);
+				var left = _grid.GetSquaresInDirection(sorted.First().Row, sorted.First().Column, Direction.Leftwards);
 				if (left.Any())
 				{
 					directionCandidates.Add(left);
 				}
-				var right = grid.GetSquaresInDirection(sorted.Last().Row, sorted.Last().Column, Direction.Rightwards);
+
+				var right = _grid.GetSquaresInDirection(sorted.Last().Row, sorted.Last().Column, Direction.Rightwards);
 				if (right.Any())
 				{
 					directionCandidates.Add(right);
@@ -38,27 +38,32 @@ namespace Battleship.Model
 			// Vertical
 			else
 			{
-				var up = grid.GetSquaresInDirection(sorted.First().Row, sorted.First().Column, Direction.Upwards);
+				var up = _grid.GetSquaresInDirection(sorted.First().Row, sorted.First().Column, Direction.Upwards);
 				if (up.Any())
 				{
 					directionCandidates.Add(up);
 				}
-				var down = grid.GetSquaresInDirection(sorted.Last().Row, sorted.Last().Column, Direction.Downwards);
+
+				var down = _grid.GetSquaresInDirection(sorted.Last().Row, sorted.Last().Column, Direction.Downwards);
 				if (down.Any())
 				{
 					directionCandidates.Add(down);
 				}
 			}
+
 			var groupedByLength = directionCandidates.GroupBy(l => l.Count());
 			var sortedByLength = groupedByLength.OrderByDescending(g => g.Key);
-			var longestDIrections = sortedByLength.First();
-			var candidates = longestDIrections.Count();
+			var longestDirections = sortedByLength.First();
+			var candidates = longestDirections.Count();
+
 			if (candidates == 1)
 			{
-				return longestDIrections.First().First();
+				return longestDirections.First().First();
 			}
-			int selectedIndex = random.Next();
-			return longestDIrections.ElementAt(selectedIndex).First();
+
+			var selectedIndex = _random.Next(candidates);
+
+			return longestDirections.ElementAt(selectedIndex).First();
 		}
 	}
 }

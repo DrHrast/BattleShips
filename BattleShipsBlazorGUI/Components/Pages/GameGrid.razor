@@ -13,6 +13,10 @@
 		display: flex;
 		background-color: #242423;
 	}
+	h3 {
+		font-size: xxx-large;
+		text-shadow: 1px 1px 4px black, 0 0 1em #44fa16, 0 0 0.2em #252e23;
+	}
 
 	.container {
 		height: 80%;
@@ -65,19 +69,44 @@
 	.hit-ship {
 		background-color: #4f2527;
 		cursor: default !important;
+		pointer-events: none;
 	}
 
 	.hit-water {
 		background-color: #3a535e;
 		cursor: default !important;
+		pointer-events: none;
 	}
 
 	.ship-sunken {
 		background-color: #323333;
 		cursor: default !important;
+		pointer-events: none;
 	}
+
+	.background-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
+		font-size: 1rem;
+		color: rgba(255, 255, 255, 0.1);
+		width: 40%; /* Restricts the width to 40% of the page */
+		text-align: left;
+		overflow: hidden;
+		overflow-wrap: normal;
+		pointer-events: none;
+		height: 100%; /* Ensures it spans the height of the screen */
+	}
+
 </style>
 
+<Modal @ref=modal IsServiceModal="true">
+	<FooterTemplate>
+		<Button @onclick="NewGame">Try Again</Button>
+	</FooterTemplate>
+</Modal>
+<div class="background-container">@gameText</div>
 <div class="container">
 	<h3>GameGrid</h3>
 	<div class="boards">
@@ -91,10 +120,14 @@
 </div>
 
 @code {
+	[Inject] private ModalService modalService { get; set; }
+
 	private int rowNumber = 10;
 	private int columnNumber = 10;
 	private int[] ships = {5, 4, 3, 3, 2};
+	private string gameText = "Player plays first\n";
 
+	private Modal modal = default!;
 	private List<List<Square>> friendlyBoard = [];
 	private List<List<Square>> friendlyShots = [];
 	private Gunnery friendlyGunnery = null!;
@@ -110,9 +143,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
-		InitializePlayer();
-		InitializeEnemy();
-		await FillBoards();
+		await initializeEverything();
 	}
 
 	private void InitializePlayer()
@@ -176,6 +207,7 @@
 	{
 		await FillFriendlyBoard();
 		await FIllEnemyBoard();
+		StateHasChanged();
 	}
 
 	private async Task FillFriendlyBoard()
@@ -185,20 +217,22 @@
 		{
 			foreach (var row in friendlyBoard) /* (int i = 0; i < friendlyBoard.Count(); ++i) */
 			{
-				builder.OpenElement(0, "div");
-				builder.AddAttribute(1, "class", "row");
+				builder.OpenElement(d++, "div");
+				builder.AddAttribute(d++, "class", "row");
 
 				foreach (var square in row) /* (int j = 0; j < friendlyBoard[i].Count(); ++j) */
 				{
-					builder.OpenElement(2, "button");
-					string cssClass = square.SquareState switch
+					builder.OpenElement(d++, "button");
+					string cssFriendClass = square.SquareState switch
 					{
 						SquareState.Hit => "btn-pointer square hit-ship",
 						SquareState.Missed => "btn-pointer square hit-water",
 						SquareState.Sunken => "btn-pointer square ship-sunken",
+						SquareState.Intact => square.IsShip ? "btn-pointer square ship" : "btn-pointer square water",
 						_ => "btn-pointer square water"
 					};
-					builder.AddAttribute(3, "class", square.IsShip ? "square ship" : "square water");
+					//builder.AddAttribute(d++, "class", square.IsShip ? "square ship" : "square water");
+					builder.AddAttribute(d++, "class", cssFriendClass);
 					//builder.AddAttribute(d++, "Disabled", "true");
 					builder.CloseElement();
 				}
@@ -206,7 +240,6 @@
 				builder.CloseElement();
 			}
 		};
-		StateHasChanged();
 	}
 
 	private async Task FIllEnemyBoard() 
@@ -216,12 +249,12 @@
 		{
 			foreach (var row in enemyBoard)/* (int i = 0; i < enemyBoard.Count(); ++i) */
 			{
-				builder.OpenElement(0, "div");
-				builder.AddAttribute(1, "class", "row");
+				builder.OpenElement(d++, "div");
+				builder.AddAttribute(d++, "class", "row");
 
 				foreach (var square in row) /* (int j = 0; j < enemyBoard[i].Count(); ++j) */
 				{
-					builder.OpenElement(2, "button");
+					builder.OpenElement(2, "Button");
 					string cssClass = square.SquareState switch
 					{
 						SquareState.Hit => "square hit-ship",
@@ -229,15 +262,14 @@
 						SquareState.Sunken => "square ship-sunken",
 						_ => "btn-hover square water"
 					};
-					builder.AddAttribute(3, "class", cssClass);
-					builder.AddAttribute(4, "onclick", EventCallback.Factory.Create(this, async () => await FriendlyFire(square)));
+					builder.AddAttribute(d++, "class", cssClass);
+					builder.AddAttribute(d++, "onclick", EventCallback.Factory.Create(this, async () => await FriendlyFire(square)));
 					builder.CloseElement();
 				}
 
 				builder.CloseElement();
 			}
 		};
-		StateHasChanged();
 	}
 
 	private async Task FriendlyFire(Square target)
@@ -268,10 +300,63 @@
 				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
 				break;
 		}
-
 		if(!IsGameOver())
 		{
+			gameText += "Skynet is attacking!\n";
+			StateHasChanged();
+			await Task.Delay(500);
 			await EnemyFire();
+		}
+		else
+		{
+			gameText += "Player saved Sarah Conor";
+			GameOver("player");
+		}
+	}
+
+	private async Task FriendlyAI() //Method for testing
+	{
+		var target = friendlyGunnery.Next();
+		var hit = enemyFleet.Hit(target.Row, target.Column);
+
+		friendlyGunnery.ProcessHitResult(hit);
+		switch (hit)
+		{
+			case HitResult.Hit:
+				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
+				break;
+			case HitResult.Sunken:
+				{
+					foreach (var ship in enemyFleet.Ships)
+					{
+						if (ship.Squares.Any(square => square.Row == target.Row && square.Column == target.Column))
+						{
+							foreach (var sunkSquare in ship.Squares)
+							{
+								enemyBoard[sunkSquare.Row][sunkSquare.Column].ChangeState(SquareState.Sunken);
+							}
+							break;
+						}
+					}
+					break;
+				}
+			default:
+				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
+				break;
+		}
+
+		StateHasChanged();
+		if (!IsGameOver())
+		{
+			gameText += "Skynet is attacking! \n";
+			StateHasChanged();
+			await Task.Delay(100);
+			await EnemyFire();
+		}
+		else
+		{
+			gameText += "Player saved Sarah Conor";
+			GameOver("player");
 		}
 	}
 
@@ -307,10 +392,17 @@
 		}
 
 		StateHasChanged();
-
 		if (IsGameOver())
 		{
-			Console.WriteLine("You Lost!");
+			gameText += "Skynet rules the world!";
+			GameOver("skynet");
+		}
+		else
+		{
+			gameText += "Fire back player! \n";
+			StateHasChanged();
+			await Task.Delay(100);
+			await FriendlyAI(); //For testing
 		}
 	}
 
@@ -320,5 +412,70 @@
 		var enemyLost = enemyFleet.Ships.SelectMany(s => s.Squares).All(ship => ship.SquareState != SquareState.Intact);
 
 		return playerLost || enemyLost;
+	}
+
+	private void GameOver(string winner)
+	{
+		if (winner == "player")
+		{
+			ShowGameOverModal(1);
+		}
+		else
+		{
+			ShowGameOverModal(2);
+		}
+	}
+
+	private class ModalOptions : ModalOption
+	{
+		public EventCallback OnFooterButtonClick { get; set; }
+	}
+
+	private async Task ShowGameOverModal(int indicator)
+	{
+		var modalOption = new ModalOption();
+		switch(indicator)
+		{
+			case 1:
+				{
+					modalOption = new ModalOptions
+						{
+							Title = "GAME OVER",
+							Type = ModalType.Dark,
+							Message = $"Game over! Player has saved Sarah Conor\nand saved the world!",
+							IsVerticallyCentered = true,
+							OnFooterButtonClick = EventCallback.Factory.Create(this, async () => await NewGame())
+						};
+					break;
+				}
+			case 2:
+				{
+					modalOption = new ModalOptions
+						{
+							Title = "GAME OVER",
+							Type = ModalType.Danger,
+							Message = $"Game over! Skynet won and Enslaved human kind.",
+							IsVerticallyCentered = true,
+							OnFooterButtonClick = EventCallback.Factory.Create(this, async () => await NewGame())
+						};
+					break;
+				}
+		}
+		await modalService.ShowAsync(modalOption);
+	}
+
+	private async Task initializeEverything()
+	{
+		InitializePlayer();
+		InitializeEnemy();
+		await FillBoards();
+		gameText = "Player plays first. \n";
+		FriendlyAI();
+	}
+
+	private async Task NewGame()
+	{
+		await modal.HideAsync();
+		await initializeEverything();
 	}
 }
