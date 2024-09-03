@@ -2,7 +2,6 @@
 
 @rendermode InteractiveServer
 @using Battleship.Model
-@using Battleship.BattleShipsBlazorGUI.State
 
 <PageTitle>Battle Ships</PageTitle>
 
@@ -97,11 +96,11 @@
 		<div class="friendly">
 			<label class="bold-label">Player: </label>
 			<div>
-				<input type="radio" id="ai" name="player_choice" value="true" @onchange="() => gameState.IsAi = true" checked="@gameState.IsAi" />
+				<input type="radio" id="ai" name="player_choice" value="true" @onchange="() => IsAi = true" checked="@IsAi" />
 				<label for="ai">AI</label>
 			</div>
 			<div>
-				<input type="radio" id="human" name="player_choice" value="false" @onchange="() => gameState.IsAi = false" checked="@(!gameState.IsAi)" />
+				<input type="radio" id="human" name="player_choice" value="false" @onchange="() => IsAi = false" checked="@(!IsAi)" />
 				<label for="human">Human</label>
 			</div>
 		</div>
@@ -111,16 +110,19 @@
 
 @code {
 	[Inject] private NavigationManager NavManager { get; set; }
-	[Inject] private GameState gameState { get; set; }
+
+	private bool IsAi;
 
 	private void StartNewGame()
 	{
-		NavManager.NavigateTo("/GameGrid");
-		//_gameModel.aiPlaying = isChosenAI;
+		if(!IsAi)
+		{
+			NavManager.NavigateTo("/GameGrid");			
+		}
+		else
+		{
+			NavManager.NavigateTo("/AiGameGrid");
+		}
 	}
 
-	// private void CheckPlayer()
-	// {
-	// 	_gameModel.aiPlaying = isChosenAI;
-	// }
 }

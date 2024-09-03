@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelTests", "ModelTests\ModelTests.csproj", "{A5116867-2A87-44DA-A437-6A878CDF740F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleShipsBlazorGUI", "BattleShipsBlazorGUI\BattleShipsBlazorGUI.csproj", "{4F51B090-5D8D-4046-9C8B-EC3F4479E33F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleShipsBlazorGUI", "BattleShipsBlazorGUI\BattleShipsBlazorGUI.csproj", "{4F51B090-5D8D-4046-9C8B-EC3F4479E33F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

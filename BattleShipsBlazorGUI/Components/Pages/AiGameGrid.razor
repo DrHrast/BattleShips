@@ -1,4 +1,4 @@
-﻿@page "/GameGrid"
+﻿@page "/AiGameGrid"
 
 @rendermode InteractiveServer
 @using Battleship.Model
@@ -111,9 +111,11 @@
 	<h3>GameGrid</h3>
 	<div class="boards">
 		<div class="friendlyBoard">
+			<label>Skynet</label>
 			@fleetBoard
 		</div>
 		<div class="enemyBoard">
+			<label>HumanAI</label>
 			@enemyShotBoard
 		</div>
 	</div>
@@ -124,9 +126,9 @@
 
 	private int rowNumber = 10;
 	private int columnNumber = 10;
-	private int[] ships = {5, 4, 3, 3, 2};
+	private int[] ships = { 5, 4, 3, 3, 2 };
 	private string gameText = "Player plays first\n";
-	private int humanWon = 0;
+	private int aiWon = 0;
 	private int skynetWon = 0;
 
 	private Modal modal = default!;
@@ -139,8 +141,8 @@
 	private Gunnery enemyGunnery = null!;
 	private Fleet enemyFleet = null!;
 
-	private RenderFragment ?fleetBoard;
-	private RenderFragment ?enemyShotBoard;
+	private RenderFragment? fleetBoard;
+	private RenderFragment? enemyShotBoard;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -175,13 +177,13 @@
 		CreateBoards(enemyBoard, enemyShots, false);
 	}
 
-	private void CreateBoards(List<List<Square>> fleetBoard, List<List<Square>> shotsBoard, bool IsFriendly=true)
+	private void CreateBoards(List<List<Square>> fleetBoard, List<List<Square>> shotsBoard, bool IsFriendly = true)
 	{
-		for(int i = 0; i < rowNumber; ++i)
+		for (int i = 0; i < rowNumber; ++i)
 		{
 			List<Square> fleetRow = [];
 			List<Square> shotsRow = [];
-			for(int j = 0; j < columnNumber; ++j)
+			for (int j = 0; j < columnNumber; ++j)
 			{
 				fleetRow.Add(new Square(i, j));
 				shotsRow.Add(new Square(i, j));
@@ -190,11 +192,11 @@
 			shotsBoard.Add(shotsRow);
 		}
 
-		if(IsFriendly)
+		if (IsFriendly)
 		{
-			foreach(var ship in friendlyFleet.Ships)
+			foreach (var ship in friendlyFleet.Ships)
 			{
-				foreach(var field in ship.Squares)
+				foreach (var field in ship.Squares)
 				{
 					fleetBoard[field.Row][field.Column].IsShip = true;
 				}
@@ -202,13 +204,13 @@
 		}
 		else
 		{
-			foreach(var ship in enemyFleet.Ships)
+			foreach (var ship in enemyFleet.Ships)
 			{
-				foreach(var field in ship.Squares)
+				foreach (var field in ship.Squares)
 				{
 					fleetBoard[field.Row][field.Column].IsShip = true;
 				}
-			}	
+			}
 		}
 	}
 
@@ -224,12 +226,12 @@
 		int d = 0;
 		fleetBoard = builder =>
 		{
-			foreach (var row in friendlyBoard) /* (int i = 0; i < friendlyBoard.Count(); ++i) */
+			foreach (var row in friendlyBoard)
 			{
 				builder.OpenElement(d++, "div");
 				builder.AddAttribute(d++, "class", "row");
 
-				foreach (var square in row) /* (int j = 0; j < friendlyBoard[i].Count(); ++j) */
+				foreach (var square in row)
 				{
 					builder.OpenElement(d++, "button");
 					string cssFriendClass = square.SquareState switch
@@ -240,9 +242,7 @@
 						SquareState.Intact => square.IsShip ? "btn-pointer square ship" : "btn-pointer square water",
 						_ => "btn-pointer square water"
 					};
-					//builder.AddAttribute(d++, "class", square.IsShip ? "square ship" : "square water");
 					builder.AddAttribute(d++, "class", cssFriendClass);
-					//builder.AddAttribute(d++, "Disabled", "true");
 					builder.CloseElement();
 				}
 
@@ -251,28 +251,28 @@
 		};
 	}
 
-	private async Task FIllEnemyBoard() 
+	private async Task FIllEnemyBoard()
 	{
 		int d = 0;
 		enemyShotBoard = builder =>
 		{
-			foreach (var row in enemyBoard)/* (int i = 0; i < enemyBoard.Count(); ++i) */
+			foreach (var row in enemyBoard)
 			{
 				builder.OpenElement(d++, "div");
 				builder.AddAttribute(d++, "class", "row");
 
-				foreach (var square in row) /* (int j = 0; j < enemyBoard[i].Count(); ++j) */
+				foreach (var square in row)
 				{
-					builder.OpenElement(2, "Button");
+					builder.OpenElement(d++, "button");
 					string cssClass = square.SquareState switch
 					{
-						SquareState.Hit => "square hit-ship",
-						SquareState.Missed => "square hit-water",
-						SquareState.Sunken => "square ship-sunken",
-						_ => "btn-hover square water"
+						SquareState.Hit => "btn-pointer square hit-ship",
+						SquareState.Missed => "btn-pointer square hit-water",
+						SquareState.Sunken => "btn-pointer square ship-sunken",
+						SquareState.Intact => square.IsShip ? "btn-pointer square ship" : "btn-pointer square water",
+						_ => "btn-pointer square water"
 					};
 					builder.AddAttribute(d++, "class", cssClass);
-					builder.AddAttribute(d++, "onclick", EventCallback.Factory.Create(this, async () => await FriendlyHumanFire(square)));
 					builder.CloseElement();
 				}
 
@@ -281,18 +281,20 @@
 		};
 	}
 
-	private async Task FriendlyHumanFire(Square target)
+	private async Task FriendlyAIFire()
 	{
+		var target = friendlyGunnery.Next();
 		var hit = enemyFleet.Hit(target.Row, target.Column);
 
-		switch(hit)
+		friendlyGunnery.ProcessHitResult(hit);
+		switch (hit)
 		{
 			case HitResult.Hit:
 				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
 				break;
 			case HitResult.Sunken:
 				{
-					foreach(var ship in enemyFleet.Ships)
+					foreach (var ship in enemyFleet.Ships)
 					{
 						if (ship.Squares.Any(square => square.Row == target.Row && square.Column == target.Column))
 						{
@@ -309,17 +311,19 @@
 				enemyBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
 				break;
 		}
-		if(!IsGameOver())
+
+		StateHasChanged();
+		if (!IsGameOver())
 		{
-			gameText += "Skynet is attacking!\n";
+			gameText += "Skynet is attacking! \n";
 			StateHasChanged();
-			await Task.Delay(400);
+			await Task.Delay(50);
 			await EnemyFire();
 		}
 		else
 		{
 			gameText += "Player saved Sarah Conor";
-			humanWon++;
+			aiWon++;
 			GameOver("player");
 		}
 	}
@@ -330,7 +334,7 @@
 		var hit = friendlyFleet.Hit(target.Row, target.Column);
 
 		enemyGunnery.ProcessHitResult(hit);
-		switch(hit)
+		switch (hit)
 		{
 			case HitResult.Hit:
 				friendlyBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
@@ -366,6 +370,10 @@
 		{
 			gameText += "Fire back player! \n";
 			StateHasChanged();
+			
+			await Task.Delay(50);
+			await FriendlyAIFire();
+			
 		}
 	}
 
@@ -397,7 +405,7 @@
 	private async Task ShowGameOverModal(int indicator)
 	{
 		var modalOption = new ModalOption();
-		switch(indicator)
+		switch (indicator)
 		{
 			case 1:
 				{
@@ -405,7 +413,7 @@
 						{
 							Title = "GAME OVER",
 							Type = ModalType.Dark,
-							Message = $"Game over! Player has saved Sarah Conor\nand the world! " + $"For the {humanWon}th time. " + $"Record so far: {humanWon}:{skynetWon}",
+							Message = $"Game over! Humans saved Sarah Conor\nand the world! " + $"For the {aiWon}th time. " + $"Record so far: {aiWon}:{skynetWon}",
 							IsVerticallyCentered = true,
 							OnFooterButtonClick = EventCallback.Factory.Create(this, async () => await NewGame())
 						};
@@ -417,7 +425,7 @@
 						{
 							Title = "GAME OVER",
 							Type = ModalType.Danger,
-							Message = $"Game over! Skynet won and Enslaved human kind. " + $"For the {skynetWon}th time. " + $"Record so far: {skynetWon}:{humanWon}",
+							Message = $"Game over! Skynet won and Enslaved human kind. " + $"For the {skynetWon}th time. " + $"Record so far: {skynetWon}:{aiWon}",
 							IsVerticallyCentered = true,
 							OnFooterButtonClick = EventCallback.Factory.Create(this, async () => await NewGame())
 						};
@@ -434,6 +442,8 @@
 		InitializeEnemy();
 		await FillBoards();
 		gameText = "Player plays first. \n";
+		await FriendlyAIFire();
+		
 	}
 
 	private async Task NewGame()
