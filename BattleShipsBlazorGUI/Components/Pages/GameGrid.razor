@@ -2,6 +2,7 @@
 
 @rendermode InteractiveServer
 @using Battleship.Model
+@using Battleship.BattleShipsBlazorGUI.State
 
 <style>
 	body {
@@ -121,6 +122,7 @@
 
 @code {
 	[Inject] private ModalService modalService { get; set; }
+	[Inject] private GameState gameState { get; set; }
 
 	private int rowNumber = 10;
 	private int columnNumber = 10;
@@ -142,8 +144,16 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		await base.OnInitializedAsync();
-		await initializeEverything();
+		try
+		{
+			await base.OnInitializedAsync();
+			await initializeEverything();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Initialization error: {ex.Message}");
+			// Optionally, display a modal or redirect to an error page
+		}
 	}
 
 	private void InitializePlayer()
@@ -263,7 +273,7 @@
 						_ => "btn-hover square water"
 					};
 					builder.AddAttribute(d++, "class", cssClass);
-					builder.AddAttribute(d++, "onclick", EventCallback.Factory.Create(this, async () => await FriendlyFire(square)));
+					builder.AddAttribute(d++, "onclick", EventCallback.Factory.Create(this, async () => await FriendlyHumanFire(square)));
 					builder.CloseElement();
 				}
 
@@ -272,7 +282,7 @@
 		};
 	}
 
-	private async Task FriendlyFire(Square target)
+	private async Task FriendlyHumanFire(Square target)
 	{
 		var hit = enemyFleet.Hit(target.Row, target.Column);
 
@@ -304,7 +314,7 @@
 		{
 			gameText += "Skynet is attacking!\n";
 			StateHasChanged();
-			await Task.Delay(500);
+			await Task.Delay(400);
 			await EnemyFire();
 		}
 		else
@@ -314,7 +324,7 @@
 		}
 	}
 
-	private async Task FriendlyAI() //Method for testing
+	private async Task FriendlyAIFire() //Method for testing
 	{
 		var target = friendlyGunnery.Next();
 		var hit = enemyFleet.Hit(target.Row, target.Column);
@@ -401,8 +411,11 @@
 		{
 			gameText += "Fire back player! \n";
 			StateHasChanged();
-			await Task.Delay(100);
-			await FriendlyAI(); //For testing
+			if (gameState.IsAi)
+			{
+				await Task.Delay(100);
+				await FriendlyAIFire(); //For testing				
+			}
 		}
 	}
 
@@ -466,11 +479,15 @@
 
 	private async Task initializeEverything()
 	{
+		StateHasChanged();
 		InitializePlayer();
 		InitializeEnemy();
 		await FillBoards();
 		gameText = "Player plays first. \n";
-		FriendlyAI();
+		if (gameState.IsAi)
+		{
+			await FriendlyAIFire();			
+		}
 	}
 
 	private async Task NewGame()
