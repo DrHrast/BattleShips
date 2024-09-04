@@ -1,5 +1,4 @@
 using Battleship.BattleShipsBlazorGUI.Components;
-using Battleship.BattleShipsBlazorGUI.State;
 
 namespace BattleShipsBlazorGUI
 {
@@ -12,8 +11,6 @@ namespace BattleShipsBlazorGUI
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-
-			builder.Services.AddScoped<GameState>();
 
 			builder.Services.AddBlazorBootstrap();
 
